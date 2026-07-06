@@ -17,7 +17,6 @@ Sistema inteligente de gerenciamento de inventário desenvolvido com arquitetura
 ### Backend
 - **Python 3.11+** + **FastAPI**
 - **SQLAlchemy** — ORM
-- **Alembic** — Migrações de banco de dados
 - **MySQL 8** — Banco de dados relacional
 - **Docker** — Containerização
 
@@ -92,7 +91,3 @@ smart-inventory-hub/
 ├── docker-compose.yml    # Orquestração de containers
 └── package.json          # Dependências do frontend
 ```
-
-## Licença
-
-Este projeto é privado e de uso exclusivo.
