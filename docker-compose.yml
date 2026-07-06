@@ -1,0 +1,57 @@
+version: "3.8"
+
+services:
+  # ─── MySQL Database ────────────────────────────────────────
+  mysql:
+    image: mysql:8.0
+    container_name: smart-inventory-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: usbw
+      MYSQL_DATABASE: smart_inventory
+      MYSQL_USER: root
+      MYSQL_PASSWORD: usbw
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - inventory-network
+
+  # ─── Backend API ───────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: smart-inventory-backend
+    restart: unless-stopped
+    environment:
+      DB_HOST: localhost
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: usbw
+      DB_NAME: smart_inventory
+      APP_ENV: production
+      APP_DEBUG: "false"
+      SECRET_KEY: change-this-in-production
+      CORS_ORIGINS: "http://localhost:5173,http://localhost:3000"
+    ports:
+      - "8000:8000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - inventory-network
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  inventory-network:
+    driver: bridge
